@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Task Manager</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-blue-50 min-h-screen flex items-center justify-center">
+  <div class="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
+    <h1 class="text-3xl font-bold mb-6 text-center text-blue-600">📝 Task Manager</h1>
+    
+    <div class="mb-4 flex">
+      <input id="new-task" type="text" placeholder="Enter a new task" class="flex-1 p-2 border border-blue-300 rounded-l focus:outline-none focus:ring focus:ring-blue-200"/>
+      <button onclick="addTask()" class="bg-blue-600 text-white px-4 py-2 rounded-r hover:bg-blue-700">Add</button>
+    </div>
+
+    <ul id="task-list" class="space-y-2"></ul>
+  </div>
+
+  <script>
+    const tasks = [
+      { id: 1, title: 'Buy groceries', completed: false },
+      { id: 2, title: 'Read a book', completed: true }
+    ];
+
+    const taskList = document.getElementById('task-list');
+
+    function renderTasks() {
+      taskList.innerHTML = '';
+      tasks.forEach(task => {
+        const li = document.createElement('li');
+        li.className = 'flex items-center justify-between p-3 border rounded bg-white shadow-sm';
+
+        li.innerHTML = `
+          <span class="flex-1 ${task.completed ? 'line-through text-gray-400' : 'text-gray-800'}">
+            ${task.completed ? '✅ ' : ''}${task.title}
+          </span>
+          <div class="space-x-2 flex-shrink-0">
+            <button onclick="toggleTask(${task.id})" class="text-sm px-2 py-1 rounded bg-green-500 text-white hover:bg-green-600">
+              ${task.completed ? 'Undo' : 'Done'}
+            </button>
+            <button onclick="deleteTask(${task.id})" class="text-sm px-2 py-1 rounded bg-red-500 text-white hover:bg-red-600">
+              Delete
+            </button>
+          </div>
+        `;
+        taskList.appendChild(li);
+      });
+    }
+
+    function addTask() {
+      const input = document.getElementById('new-task');
+      const title = input.value.trim();
+      if (title) {
+        tasks.push({ id: Date.now(), title, completed: false });
+        input.value = '';
+        renderTasks();
+      }
+    }
+
+    function toggleTask(id) {
+      const task = tasks.find(t => t.id === id);
+      if (task) {
+        task.completed = !task.completed;
+        renderTasks();
+      }
+    }
+
+    function deleteTask(id) {
+      const index = tasks.findIndex(t => t.id === id);
+      if (index > -1) {
+        tasks.splice(index, 1);
+        renderTasks();
+      }
+    }
+
+    renderTasks();
+  </script>
+</body>
+</html>
